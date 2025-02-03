@@ -68,6 +68,12 @@ output = predictions.select(
     ).alias("value")
 ).selectExpr("to_json(value) AS value")
 
+debug_query = predictions\
+    .writeStream\
+    .format("console")\
+    .outputMode("append")\
+    .start()
+
 query = (output.writeStream
          .format("kafka")
          .option("kafka.bootstrap.servers", bootstrap_servers)
