@@ -1,5 +1,6 @@
 import json
 import time
+import random
 import pandas as pd
 from kafka import KafkaProducer
 
