@@ -8,7 +8,6 @@ spark = SparkSession.builder \
     .appName("HealthDataStreaming") \
     .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.13:3.5.4") \
     .config("spark.sql.debug.maxToStringFields", "100") \
-    .config("spark.driver.host", "host.docker.internal") \
     .master("local[4]") \
     .getOrCreate()
 
@@ -67,6 +66,12 @@ output = predictions.select(
         col("prediction").alias("label")
     ).alias("value")
 ).selectExpr("to_json(value) AS value")
+
+debug_query = predictions\
+    .writeStream\
+    .format("console")\
+    .outputMode("append")\
+    .start()
 
 query = (output.writeStream
          .format("kafka")
